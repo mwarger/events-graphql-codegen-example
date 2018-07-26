@@ -2,7 +2,7 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 
-import { graphql, compose, withApollo, Query } from 'react-apollo'
+import { graphql, compose, withApollo } from 'react-apollo'
 import QueryAllEvents from '../GraphQL/QueryAllEvents'
 import MutationDeleteEvent from '../GraphQL/MutationDeleteEvent'
 
@@ -10,8 +10,8 @@ import moment from 'moment'
 import { ApolloQueryResult } from 'apollo-client'
 
 import type { GetEventsQuery } from '../graphql-types.flow'
-
-class EventsQuery extends Query<GetEventsQuery> {}
+import TypedQuery from './TypedQuery'
+class EventsQuery extends TypedQuery<GetEventsQuery> {}
 
 type AllEventsState = {
   busy: boolean
@@ -35,7 +35,11 @@ class AllEvents extends Component<AllEventsProps, AllEventsState> {
   async handleDeleteClick(event, e) {
     e.preventDefault()
 
-    if (window.confirm(`Are you sure you want to delete event ${event.id}`)) {
+    if (
+      window.confirm(
+        `Are you sure you want to delete event ${event ? event.id : 'Unknown'}`
+      )
+    ) {
       const { deleteEvent } = this.props
 
       await deleteEvent(event)
@@ -56,43 +60,48 @@ class AllEvents extends Component<AllEventsProps, AllEventsState> {
     this.setState({ busy: false })
   }
 
-  renderEvent = event => (
-    <Link to={`/event/${event.id}`} className="card" key={event.id}>
-      <div className="content">
-        <div className="header">{event.name}</div>
-      </div>
-      <div className="content">
-        <p>
-          <i className="icon calendar" />
-          {moment(event.when).format('LL')}
-        </p>
-        <p>
-          <i className="icon clock" />
-          {moment(event.when).format('LT')}
-        </p>
-        <p>
-          <i className="icon marker" />
-          {event.where}
-        </p>
-      </div>
-      <div className="content">
-        <div className="description">
-          <i className="icon info circle" />
-          {event.description}
+  renderEvent = event =>
+    event && (
+      <Link to={`/event/${event.id}`} className="card" key={event.id}>
+        <div className="content">
+          <div className="header">{event.name}</div>
         </div>
-      </div>
-      <div className="extra content">
-        <i className="icon comment" /> {event.comments.items.length} comments
-      </div>
-      <button
-        className="ui bottom attached button"
-        onClick={this.handleDeleteClick.bind(this, event)}
-      >
-        <i className="trash icon" />
-        Delete
-      </button>
-    </Link>
-  )
+        <div className="content">
+          <p>
+            <i className="icon calendar" />
+            {moment(event.when).format('LL')}
+          </p>
+          <p>
+            <i className="icon clock" />
+            {moment(event.when).format('LT')}
+          </p>
+          <p>
+            <i className="icon marker" />
+            {event.where}
+          </p>
+        </div>
+        <div className="content">
+          <div className="description">
+            <i className="icon info circle" />
+            {event.description}
+          </div>
+        </div>
+        <div className="extra content">
+          <i className="icon comment" />
+          {event.comments &&
+            event.comments.items &&
+            event.comments.items.length}
+          comments
+        </div>
+        <button
+          className="ui bottom attached button"
+          onClick={this.handleDeleteClick.bind(this, event)}
+        >
+          <i className="trash icon" />
+          Delete
+        </button>
+      </Link>
+    )
 
   render() {
     const { busy } = this.state
@@ -123,9 +132,9 @@ class AllEvents extends Component<AllEventsProps, AllEventsState> {
           </div>
           {/* {[].concat(events).sort((a, b) => a.when.localeCompare(b.when)).map(this.renderEvent)} */}
           <EventsQuery query={QueryAllEvents}>
-            {({ data, loading, error }) => {
-              console.log(data)
-              return null
+            {data => {
+              const events = data.listEvents && data.listEvents.items
+              return events && events.map(this.renderEvent)
             }}
           </EventsQuery>
         </div>
