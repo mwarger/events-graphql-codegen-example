@@ -1,0 +1,14 @@
+[ignore]
+.*babylon
+.*babel
+.*npmconf
+.*fbjs
+[include]
+
+[libs]
+
+[lints]
+
+[options]
+
+[strict]

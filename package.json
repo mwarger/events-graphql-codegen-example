@@ -5,6 +5,7 @@
   "dependencies": {
     "aws-appsync": "^1.2.1",
     "aws-appsync-react": "^1.0.21",
+    "flow-bin": "^0.77.0",
     "graphql": "^0.11.7",
     "graphql-tag": "^2.5.0",
     "moment": "^2.19.2",
@@ -21,6 +22,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "flow": "flow"
   }
 }
