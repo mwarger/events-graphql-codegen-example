@@ -23,6 +23,11 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "flow": "flow"
+    "flow": "flow",
+    "introspect-schema": "aws-appsync-codegen introspect-schema ./src/schema.graphql --output ./src/schema.json",
+    "generate-types": "aws-appsync-codegen generate src/**/*.js --schema ./src/schema.json --target flow --output ./src/graphql-types.flow.js --add-typename"
+  },
+  "devDependencies": {
+    "aws-appsync-codegen": "^0.17.4"
   }
 }

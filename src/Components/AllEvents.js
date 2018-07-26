@@ -2,12 +2,16 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 
-import { graphql, compose, withApollo } from 'react-apollo'
+import { graphql, compose, withApollo, Query } from 'react-apollo'
 import QueryAllEvents from '../GraphQL/QueryAllEvents'
 import MutationDeleteEvent from '../GraphQL/MutationDeleteEvent'
 
 import moment from 'moment'
 import { ApolloQueryResult } from 'apollo-client'
+
+import type { GetEventsQuery } from '../graphql-types.flow'
+
+class EventsQuery extends Query<GetEventsQuery> {}
 
 type AllEventsState = {
   busy: boolean
@@ -118,6 +122,12 @@ class AllEvents extends Component<AllEventsProps, AllEventsState> {
             </Link>
           </div>
           {/* {[].concat(events).sort((a, b) => a.when.localeCompare(b.when)).map(this.renderEvent)} */}
+          <EventsQuery query={QueryAllEvents}>
+            {({ data, loading, error }) => {
+              console.log(data)
+              return null
+            }}
+          </EventsQuery>
         </div>
       </div>
     )
