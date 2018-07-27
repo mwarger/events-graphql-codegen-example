@@ -35,11 +35,9 @@ class AllEvents extends Component<AllEventsProps, AllEventsState> {
   async handleDeleteClick(event, e) {
     e.preventDefault()
 
-    if (
-      window.confirm(
-        `Are you sure you want to delete event ${event ? event.id : 'Unknown'}`
-      )
-    ) {
+    if (!event) return
+
+    if (window.confirm(`Are you sure you want to delete event ${event.id}`)) {
       const { deleteEvent } = this.props
 
       await deleteEvent(event)
